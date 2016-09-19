@@ -1,0 +1,20 @@
+name: sdn charm
+subordinate: true
+maintainer: OpenStack Charmers <openstack-charmers@lists.ubuntu.com>
+summary: Open vSwitch OpenDayLight subordinate charm
+description:
+  Description of this SDN charm
+tags:
+  - openstack
+series:
+  - xenial
+  - trusty
+  - yakkety
+provides:
+  neutron-plugin:
+    interface: neutron-plugin
+    scope: container
+requires:
+  container:
+    interface: juju-info
+    scope: container
