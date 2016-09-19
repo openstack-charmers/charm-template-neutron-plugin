@@ -67,7 +67,7 @@ installed and rename the **sdn\_charm.py** file. At this point
 the charm could be built, deployed and related to a principle charm and the
 default handlers would install the packages listed in the SDN charm class.
 
-```
+```python
 class SDNCharm(charms_openstack.charm.OpenStackCharm):
 
     # Internal name of charm
@@ -93,7 +93,7 @@ installation has been done a handler needs to be added to listen for the
 **charm.install** event. To do this edit
 **src/reactive/sdn\_charm\_handlers.py** and add the reactive handler:
 
-```
+```python
 @reactive.when('charm.installed')
 def configure_foo():
     with charm.provide_charm_instance() as sdn_charm:
@@ -103,7 +103,7 @@ def configure_foo():
 Now add the **configure\_foo** class to the charm class definition in
 **src/lib/charm/openstack/sdn\_charm.py**
 
-```
+```python
 class SDNCharm(charms_openstack.charm.OpenStackCharm):
 
     # Internal name of charm
@@ -125,7 +125,7 @@ state and the running of configure\_foo gated on the state not being present
 e.g.
 
 
-```
+```python
 @reactive.when_not('foo.configured')
 @reactive.when('charm.installed')
 def configure_foo():
@@ -145,7 +145,7 @@ then a number of **service\_** variables are set in the
 identity\_service namespace. So, charm template could contain the following to
 access those variables:
 
-```
+```python
 [keystone_authtoken]
 auth_uri = {{ identity_service.service_protocol }}://{{ identity_service.service_host }}:{{ identity_service.service_port }}
 auth_url = {{ identity_service.auth_protocol }}://{{ identity_service.auth_host }}:{{ identity_service.auth_port }}
@@ -181,7 +181,7 @@ this. In the example below if the user has set the boolean config option
 **angry** to **True** and set the **radiation** string config option to
 **gamma** then the **hulk_mode** property is set to True.
 
-```
+```python
 @charms_openstack.adapters.config_property
 def hulk_mode(config):
     if config.angry and config.radiation =='gamma':
@@ -198,7 +198,7 @@ It is useful to be able to set a property based on the settings retrieved from
 an interface. In the example below the charm sets a pipeline based on the
 Keystone API version advertised by the keystone interface,
 
-```
+```python
 @charms_openstack.adapters.adapter_property('identity_service')
 def charm_pipeline(keystone):
     return {
@@ -223,7 +223,7 @@ which will fire this trigger. An instance of the interface is passed by the
 decorator to the **configure_neutron_plugin** method. This is inturn passed to
 the **configure_neutron_plugin** method in the charm class.
 
-```
+```python
 @reactive.when('neutron-plugin.connected')
 def configure_neutron_plugin(neutron_plugin):
     with charm.provide_charm_instance() as sdn_charm:
@@ -233,7 +233,7 @@ def configure_neutron_plugin(neutron_plugin):
 In the charm class the instance of the interface is used to update the
 principle
 
-```
+```python
     def configure_neutron_plugin(self, neutron_plugin):
         neutron_plugin.configure_plugin(
             plugin='mysdn',
