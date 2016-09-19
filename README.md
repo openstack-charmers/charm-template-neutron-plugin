@@ -63,18 +63,35 @@ should be used to define some of the attributes of this application like charm
 name, the earliest OpenStack release this charm can be used with (defaults to
 Essex!) and the packages that should be installed for this charm. Its good
 practise to rename the class to reflect the name of the application being
-installed and renane the **sdn\_charm.py** file. At this point
+installed and rename the **sdn\_charm.py** file. At this point
 the charm could be built, deployed and related to a principle charm and the
 default handlers would install the packages listed in the SDN charm class.
+
+```
+class SDNCharm(charms_openstack.charm.OpenStackCharm):                          
+                                                                                
+    # Internal name of charm                                                    
+    service_name = name = 'sdn'                                                 
+                                                                                
+    # First release supported                                                   
+    release = 'liberty'                                                         
+                                                                                
+    # List of packages to install for this charm                                
+    packages = ['sdn-pkg'] 
+
+```
+
+If configure\_foo() should only be run once then the handler can emit a new
+state and the running of configure\_foo gated on the state not being present
 
 ### Adding a new handler
 
 Once the packages are installed it is likely that additional configuration is
-needed eg rendering config, configuring bridges or updating remote services via
-there interfaces. To perform an action once the initial package installation
-has been done a handler needs to be added to listen for the **charm.install**
-event. To do this edit **src/reactive/sdn_charm_handlers.py** and add the
-reactive handler:
+needed e.g. rendering config, configuring bridges or updating remote services
+via their interfaces. To perform an action once the initial package
+installation has been done a handler needs to be added to listen for the
+**charm.install** event. To do this edit
+**src/reactive/sdn\_charm\_handlers.py** and add the reactive handler:
 
 ```
 @reactive.when('charm.installed')                                               
@@ -117,14 +134,14 @@ def configure_foo():
     reactive.set_state('foo.configured')                                              
 ```
 
-### Template config from Interfaces
+### Template properties from Interfaces
 
 By default some interfaces are automatically allocated a namespace within the
-template context. Those namespaces are also autmatically populated with some
+template context. Those namespaces are also automatically populated with some
 options directly from the interface. For example if a charm is related to
 Keystones 
-[keystone](https://github.com/openstack/charm-interface-keystone)
-interface then a number of service\_\* variables are set in the
+[keystone interface](https://github.com/openstack/charm-interface-keystone)
+then a number of **service\_** variables are set in the
 identity\_service namespace. So, charm template could contain the following to
 access those variables:
 
@@ -138,7 +155,7 @@ See the **auto\_accessors** list in
 [charm-interface-keystone](https://github.com/openstack/charm-interface-keystone/blob/master/requires.py)
 for a complete list
 
-### Template config from Adapters
+### Template properties from Adapters
 
 Adapters are used to take the data from an interface and create new variables
 in the template context. For example the **RabbitMQRelationAdapter** (which can
@@ -146,10 +163,10 @@ be found in the
 [adapters.py](https://github.com/openstack/charms.openstack/blob/master/charms_openstack/adapters.py)
 from charms.openstack.) adds an **ssl\_ca\_file** variable to the amqp
 namespace. This setting is really independant of the interface with rabbit but
-be consistant accross the OpenStack deployment. This variable can then be
-accessed in the same way as the rest of the amqp setting ```{{ amqp.ssl_ca_file }}```
+should be consistant accross the OpenStack deployment. This variable can then
+be accessed in the same way as the rest of the amqp setting ```{{ amqp.ssl_ca_file }}```
 
-### Template config from user config
+### Template properties from user config
 
 The settings exposed to the user via the config.yaml are added to the
 **options** namespace.  The value the user has set for option  **foo** can be
@@ -161,8 +178,8 @@ It is useful to be able to set a property based on examining multiple config
 options or examining other aspects of the runtime system. The
 **charms_openstack.adapters.config_property** decorator can be used to achieve
 this. In the example below if the user has set the boolean config option
-**angry** to True and set the radiation string config option to 'gamma' then
-the hulk_mode is set to True.
+**angry** to **True** and set the **radiation** string config option to
+**gamma** then the **hulk_mode** property is set to True.
 
 ```
 @charms_openstack.adapters.config_property
