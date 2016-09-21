@@ -1,4 +1,4 @@
-name: sdn charm
+name: $metadata.package
 subordinate: true
 maintainer: OpenStack Charmers <openstack-charmers@lists.ubuntu.com>
 summary: Open vSwitch OpenDayLight subordinate charm
