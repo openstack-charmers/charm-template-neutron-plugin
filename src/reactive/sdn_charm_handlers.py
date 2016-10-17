@@ -19,3 +19,4 @@ import charms.reactive as reactive
 # sdn_charm
 import charm.openstack.sdn_charm as sdn_charm  # noqa
 
+import charm.openstack.{{ charm_lib }} as {{ charm_lib }}  # noqa
