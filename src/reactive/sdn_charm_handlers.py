@@ -17,6 +17,24 @@ import charms.reactive as reactive
 
 # This charm's library contains all of the handler code associated with
 # sdn_charm
-import charm.openstack.sdn_charm as sdn_charm  # noqa
-
 import charm.openstack.{{ charm_lib }} as {{ charm_lib }}  # noqa
+
+charm.use_defaults(
+    'charm.installed',
+    'update-status')
+
+@reactive.when('neutron-plugin.connected')
+def configure_neutron_plugin(neutron_plugin):
+    with charm.provide_charm_instance() as charm_class:
+        neutron_plugin.configure_plugin(
+            plugin='ovs',
+            config={
+                "nova-compute": {
+                    "/etc/nova/nova.conf": {
+                        "sections": {
+                            'DEFAULT': [
+                            ],
+                        }
+                    }
+                }
+            })

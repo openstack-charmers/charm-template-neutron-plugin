@@ -8,13 +8,13 @@ import charms_openstack.charm
 # import charms_openstack.sdn.ovs as ovs
 
 
-class SDNCharm(charms_openstack.charm.OpenStackCharm):
+class {{ charm_class }}(charms_openstack.charm.OpenStackCharm):
 
     # Internal name of charm
-    service_name = name = 'sdn'
+    service_name = name = '{{ metadata.package }}'
 
     # First release supported
-    release = 'liberty'
+    release = '{{ release }}'
 
     # List of packages to install for this charm
-    packages = []
+    packages = {{ packages }}
