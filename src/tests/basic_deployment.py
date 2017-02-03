@@ -27,7 +27,7 @@ u = os_amulet_utils.OpenStackAmuletUtils(os_amulet_utils.DEBUG)
 
 
 class {{ charm_class }}Deployment(amulet_deployment.OpenStackAmuletDeployment):
-    """Amulet tests on a basic sdn_charm deployment."""
+    """Amulet tests on a basic {{ metadata.package }} deployment."""
 
     def __init__(self, series, openstack=None, source=None, stable=False):
         """Deploy the entire test environment."""
@@ -47,11 +47,11 @@ class {{ charm_class }}Deployment(amulet_deployment.OpenStackAmuletDeployment):
     def _add_services(self):
         """Add services
 
-           Add the services that we're testing, where sdn_charm is local,
+           Add the services that we're testing, where {{ metadata.package }} is local,
            and the rest of the service are from lp branches that are
            compatible with the local charm (e.g. stable or next).
            """
-        this_service = {'name': 'sdn_charm'}
+        this_service = {'name': '{{ metadata.package }}'}
         other_services = [
             {
                 'name': 'nova-compute',
@@ -75,7 +75,7 @@ class {{ charm_class }}Deployment(amulet_deployment.OpenStackAmuletDeployment):
     def _add_relations(self):
         """Add all of the relations for the services."""
         relations = {
-            'nova-compute:neutron-plugin': 'sdn_charm:neutron-plugin',
+            'nova-compute:neutron-plugin': '{{ metadata.package }}:neutron-plugin',
             'keystone:shared-db': 'mysql:shared-db',
             'nova-cloud-controller:shared-db': 'mysql:shared-db',
             'nova-cloud-controller:amqp': 'rabbitmq-server:amqp',
@@ -98,7 +98,7 @@ class {{ charm_class }}Deployment(amulet_deployment.OpenStackAmuletDeployment):
             'neutron-api:neutron-plugin-api',
             'neutron-gateway:quantum-network-service':
             'nova-cloud-controller:quantum-network-service',
-            'neutron-gateway:juju-info': 'sdn_charm:container',
+            'neutron-gateway:juju-info': '{{ metadata.package }}:container',
         }
         super({{ charm_class }}Deployment, self)._add_relations(relations)
 
@@ -115,12 +115,12 @@ class {{ charm_class }}Deployment(amulet_deployment.OpenStackAmuletDeployment):
     def _initialize_tests(self):
         """Perform final initialization before tests get run."""
         # Access the sentries for inspecting service units
-        self.sdn_charm_sentry = self.d.sentry['sdn_charm'][0]
+        self.{{ metadata.package }}_sentry = self.d.sentry['{{ metadata.package }}'][0]
         self.mysql_sentry = self.d.sentry['mysql'][0]
         self.keystone_sentry = self.d.sentry['keystone'][0]
         self.rabbitmq_sentry = self.d.sentry['rabbitmq-server'][0]
-        self.sdn_charm_svcs = [
-            'sdn_charm-agent', 'sdn_charm-api']
+        self.{{ metadata.package }}_svcs = [
+            '{{ metadata.package }}-agent', '{{ metadata.package }}-api']
 
         # Authenticate admin with keystone endpoint
         self.keystone = u.authenticate_keystone_admin(self.keystone_sentry,
@@ -171,7 +171,7 @@ class {{ charm_class }}Deployment(amulet_deployment.OpenStackAmuletDeployment):
         u.log.debug('Checking system services on units...')
 
         service_names = {
-            self.sdn_charm_sentry: self.sdn_charm_svcs,
+            self.{{ metadata.package }}_sentry: self.{{ metadata.package }}_svcs,
         }
 
         ret = u.validate_services_by_name(service_names)
