@@ -26,13 +26,13 @@ import charmhelpers.contrib.openstack.amulet.utils as os_amulet_utils
 u = os_amulet_utils.OpenStackAmuletUtils(os_amulet_utils.DEBUG)
 
 
-class SDNCharmDeployment(amulet_deployment.OpenStackAmuletDeployment):
+class {{ charm_class }}Deployment(amulet_deployment.OpenStackAmuletDeployment):
     """Amulet tests on a basic sdn_charm deployment."""
 
     def __init__(self, series, openstack=None, source=None, stable=False):
         """Deploy the entire test environment."""
-        super(SDNCharmDeployment, self).__init__(series, openstack,
-                                                       source, stable)
+        super({{ charm_class }}Deployment, self).__init__(series, openstack,
+                                                          source, stable)
         self._add_services()
         self._add_relations()
         self._configure_services()
@@ -69,7 +69,7 @@ class SDNCharmDeployment(amulet_deployment.OpenStackAmuletDeployment):
             {'name': 'nova-cloud-controller'},
             {'name': 'glance'},
         ]
-        super(SDNCharmDeployment, self)._add_services(this_service,
+        super({{ charm_class }}Deployment, self)._add_services(this_service,
                                                       other_services)
 
     def _add_relations(self):
@@ -100,14 +100,14 @@ class SDNCharmDeployment(amulet_deployment.OpenStackAmuletDeployment):
             'nova-cloud-controller:quantum-network-service',
             'neutron-gateway:juju-info': 'sdn_charm:container',
         }
-        super(SDNCharmDeployment, self)._add_relations(relations)
+        super({{ charm_class }}Deployment, self)._add_relations(relations)
 
     def _configure_services(self):
         """Configure all of the services."""
         keystone_config = {'admin-password': 'openstack',
                            'admin-token': 'ubuntutesting'}
         configs = {'keystone': keystone_config}
-        super(SDNCharmDeployment, self)._configure_services(configs)
+        super({{ charm_class }}Deployment, self)._configure_services(configs)
 
     def _get_token(self):
         return self.keystone.service_catalog.catalog['token']['id']

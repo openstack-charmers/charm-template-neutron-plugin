@@ -16,8 +16,8 @@
 
 """Amulet tests on a basic SDN Charm deployment on xenial-mitaka."""
 
-from basic_deployment import SDNCharmDeployment
+from basic_deployment import {{ charm_class }}Deployment
 
 if __name__ == '__main__':
-    deployment = SDNCharmDeployment(series='xenial')
+    deployment = {{ charm_class }}Deployment(series='xenial')
     deployment.run_tests()
